@@ -1,6 +1,7 @@
 package uk.co.chrisjenx.calligraphy;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,12 @@ import android.widget.TextView;
  * Project: Calligraphy
  */
 class CalligraphyLayoutInflater extends LayoutInflater {
+
+    private static final int[] R_styleable_TextView = new int[]{
+        /* 0 */android.R.attr.fontFamily,
+    };
+    private static final int TextView_fontFamily = 0;
+
     private static final String[] sClassPrefixList = {
             "android.widget.",
             "android.webkit."
@@ -56,8 +63,24 @@ class CalligraphyLayoutInflater extends LayoutInflater {
     private final void textViewFilter(final View view, final String name, final AttributeSet attrs) {
         if (view == null) return;
         if (sTextViewClassName.equals(name) || sButtonClassName.equals(name)) {
-            String textViewFont = calligraphyUtils.pullFontFamily(attrs);
-            calligraphyUtils.applyFontToTextView((TextView) view, CalligraphyConfig.get(), textViewFont);
+            String textViewFont = pullFontFamily(attrs, view.getContext());
+            calligraphyUtils.applyFontToTextView((TextView) view, textViewFont);
         }
     }
+
+    /**
+     * Pulls out the fontFamily from the attributes to see if the user has set a custom font
+     *
+     * @return
+     */
+    private String pullFontFamily(AttributeSet attrs, Context context) {
+        if (attrs == null) return null;
+        final TypedArray a = context.obtainStyledAttributes(attrs, R_styleable_TextView);
+        // Use the thickness specified, zero being the default
+        final String fontFamily = a.getString(TextView_fontFamily);
+        a.recycle();
+
+        return fontFamily;
+    }
+
 }

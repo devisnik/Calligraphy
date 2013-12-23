@@ -10,17 +10,20 @@ import android.view.LayoutInflater;
  */
 public class CalligraphyContextWrapper extends ContextWrapper {
 
+    private final String defaultFont;
     private LayoutInflater mInflater;
 
-    public CalligraphyContextWrapper(Context base) {
+    public CalligraphyContextWrapper(Context base, String defaultFont) {
         super(base);
+        this.defaultFont = defaultFont;
     }
 
     @Override
     public Object getSystemService(String name) {
         if (LAYOUT_INFLATER_SERVICE.equals(name)) {
             if (mInflater == null) {
-                mInflater = new CalligraphyLayoutInflater(LayoutInflater.from(getBaseContext()), this, new CalligraphyUtils(this, new TypefaceUtils(getAssets())));
+                mInflater = new CalligraphyLayoutInflater(LayoutInflater.from(getBaseContext()), this,
+                        new CalligraphyUtils(new TypefaceUtils(getAssets()), defaultFont));
             }
             return mInflater;
         }
