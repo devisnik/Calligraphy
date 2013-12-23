@@ -18,13 +18,11 @@ class CalligraphyLayoutInflater extends LayoutInflater {
     };
     private static final String sTextViewClassName = TextView.class.getSimpleName();
     private static final String sButtonClassName = Button.class.getSimpleName();
-
-    protected CalligraphyLayoutInflater(Context context) {
-        super(context);
-    }
+    private final CalligraphyUtils calligraphyUtils;
 
     protected CalligraphyLayoutInflater(LayoutInflater original, Context newContext) {
         super(original, newContext);
+        calligraphyUtils = new CalligraphyUtils(newContext);
     }
 
     /**
@@ -58,8 +56,8 @@ class CalligraphyLayoutInflater extends LayoutInflater {
     private final void textViewFilter(final View view, final String name, final AttributeSet attrs) {
         if (view == null) return;
         if (sTextViewClassName.equals(name) || sButtonClassName.equals(name)) {
-            String textViewFont = CalligraphyUtils.pullFontFamily(getContext(), attrs);
-            CalligraphyUtils.applyFontToTextView(getContext(), (TextView) view, CalligraphyConfig.get(), textViewFont);
+            String textViewFont = calligraphyUtils.pullFontFamily(attrs);
+            calligraphyUtils.applyFontToTextView((TextView) view, CalligraphyConfig.get(), textViewFont);
         }
     }
 }

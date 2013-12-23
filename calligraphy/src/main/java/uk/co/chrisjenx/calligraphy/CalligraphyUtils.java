@@ -1,7 +1,6 @@
 package uk.co.chrisjenx.calligraphy;
 
 import android.content.Context;
-import android.content.res.AssetManager;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
 import android.text.TextUtils;
@@ -18,32 +17,33 @@ public final class CalligraphyUtils {
         /* 0 */android.R.attr.fontFamily,
     };
     private static final int TextView_fontFamily = 0;
+    private final Context context;
+    private final TypefaceUtils typefaceUtils;
 
-    public static final boolean applyFontToTextView(final TextView textView, final Typeface typeface) {
+    public boolean applyFontToTextView(final TextView textView, final Typeface typeface) {
         if (textView == null || typeface == null) return false;
         textView.setTypeface(typeface);
         return true;
     }
 
-    public static final boolean applyFontToTextView(final Context context, final TextView textView, final String filePath) {
-        if (textView == null || context == null) return false;
-        final AssetManager assetManager = context.getAssets();
-        final Typeface typeface = TypefaceUtils.load(assetManager, filePath);
+    public boolean applyFontToTextView(final TextView textView, final String filePath) {
+        if (textView == null) return false;
+        final Typeface typeface = typefaceUtils.load(filePath);
         return applyFontToTextView(textView, typeface);
     }
 
-    public static final void applyFontToTextView(final Context context, final TextView textView, final CalligraphyConfig config) {
-        if (context == null || textView == null || config == null) return;
+    public void applyFontToTextView(final TextView textView, final CalligraphyConfig config) {
+        if (textView == null || config == null) return;
         if (!config.isFontSet()) return;
-        applyFontToTextView(context, textView, config.getFontPath());
+        applyFontToTextView(textView, config.getFontPath());
     }
 
-    public static void applyFontToTextView(final Context context, final TextView textView, final CalligraphyConfig config, final String textViewFont) {
-        if (context == null || textView == null || config == null) return;
-        if (!TextUtils.isEmpty(textViewFont) && applyFontToTextView(context, textView, textViewFont)) {
+    public void applyFontToTextView(final TextView textView, final CalligraphyConfig config, final String textViewFont) {
+        if (textView == null || config == null) return;
+        if (!TextUtils.isEmpty(textViewFont) && applyFontToTextView(textView, textViewFont)) {
             return;
         }
-        applyFontToTextView(context, textView, config);
+        applyFontToTextView(textView, config);
     }
 
     /**
@@ -51,8 +51,8 @@ public final class CalligraphyUtils {
      *
      * @return
      */
-    static final String pullFontFamily(Context context, AttributeSet attrs) {
-        if (context == null || attrs == null) return null;
+    String pullFontFamily(AttributeSet attrs) {
+        if (attrs == null) return null;
         final TypedArray a = context.obtainStyledAttributes(attrs, R_styleable_TextView);
         // Use the thickness specified, zero being the default
         final String fontFamily = a.getString(TextView_fontFamily);
@@ -61,6 +61,10 @@ public final class CalligraphyUtils {
         return fontFamily;
     }
 
-    private CalligraphyUtils() {
+    CalligraphyUtils(Context context) {
+        if (context == null)
+            throw new IllegalArgumentException("context must not be null!");
+        this.context = context;
+        typefaceUtils = new TypefaceUtils(context.getAssets());
     }
 }

@@ -17,31 +17,32 @@ import java.util.Hashtable;
  */
 public final class TypefaceUtils {
 
-    private static Hashtable<String, Typeface> sCachedFonts = new Hashtable<String, Typeface>();
+    private Hashtable<String, Typeface> cachedFonts = new Hashtable<String, Typeface>();
+    private final AssetManager assetManager;
 
     /**
      * A helper loading a custom font.
      *
-     * @param assetManager App's asset manager.
      * @param filePath     The path of the file.
      * @return Return {@link android.graphics.Typeface} or null if the path is invalid.
      */
-    public static Typeface load(final AssetManager assetManager, final String filePath) {
-        synchronized (sCachedFonts) {
+    public Typeface load(final String filePath) {
+        synchronized (cachedFonts) {
             try {
-                if (!sCachedFonts.contains(filePath)) {
+                if (!cachedFonts.contains(filePath)) {
                     final Typeface typeface = Typeface.createFromAsset(assetManager, filePath);
-                    sCachedFonts.put(filePath, typeface);
+                    cachedFonts.put(filePath, typeface);
                     return typeface;
                 }
             } catch (Exception e) {
                 Log.w("Calligraphy", "Can't create asset from " + filePath + ". Make sure you have passed in the correct path and file name.", e);
                 return null;
             }
-            return sCachedFonts.get(filePath);
+            return cachedFonts.get(filePath);
         }
     }
 
-    private TypefaceUtils() {
+    TypefaceUtils(final AssetManager assetManager) {
+        this.assetManager = assetManager;
     }
 }
