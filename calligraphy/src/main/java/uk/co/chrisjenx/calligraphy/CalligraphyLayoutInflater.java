@@ -20,9 +20,9 @@ class CalligraphyLayoutInflater extends LayoutInflater {
     private static final String sButtonClassName = Button.class.getSimpleName();
     private final CalligraphyUtils calligraphyUtils;
 
-    protected CalligraphyLayoutInflater(LayoutInflater original, Context newContext) {
-        super(original, newContext);
-        calligraphyUtils = new CalligraphyUtils(newContext);
+    protected CalligraphyLayoutInflater(LayoutInflater original, Context context, CalligraphyUtils calligraphyUtils) {
+        super(original, context);
+        this.calligraphyUtils = calligraphyUtils;
     }
 
     /**
@@ -50,7 +50,7 @@ class CalligraphyLayoutInflater extends LayoutInflater {
 
     @Override
     public LayoutInflater cloneInContext(Context newContext) {
-        return new CalligraphyLayoutInflater(this, newContext);
+        return new CalligraphyLayoutInflater(this, newContext, calligraphyUtils);
     }
 
     private final void textViewFilter(final View view, final String name, final AttributeSet attrs) {

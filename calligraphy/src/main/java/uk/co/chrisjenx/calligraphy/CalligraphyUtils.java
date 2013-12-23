@@ -17,6 +17,7 @@ public final class CalligraphyUtils {
         /* 0 */android.R.attr.fontFamily,
     };
     private static final int TextView_fontFamily = 0;
+
     private final Context context;
     private final TypefaceUtils typefaceUtils;
 
@@ -61,10 +62,10 @@ public final class CalligraphyUtils {
         return fontFamily;
     }
 
-    CalligraphyUtils(Context context) {
+    CalligraphyUtils(Context context, TypefaceUtils typefaceUtils) {
         if (context == null)
             throw new IllegalArgumentException("context must not be null!");
         this.context = context;
-        typefaceUtils = new TypefaceUtils(context.getAssets());
+        this.typefaceUtils = typefaceUtils;
     }
 }

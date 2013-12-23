@@ -17,7 +17,7 @@ import java.util.Hashtable;
  */
 public final class TypefaceUtils {
 
-    private Hashtable<String, Typeface> cachedFonts = new Hashtable<String, Typeface>();
+    private final Hashtable<String, Typeface> cachedFonts = new Hashtable<String, Typeface>();
     private final AssetManager assetManager;
 
     /**
